@@ -1,0 +1,116 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.window {
+  height: 100%;
+  width: 100%;
+}
+
+.window-icon {
+  float: left;
+  margin: 4px;
+  margin-left: 5px;
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  background-image: url("./logo.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.window-title {
+  font: caption;
+  font-size: 12px;
+  margin-left: 10px;
+  display: inline-block;
+  float: left;
+  line-height: 30px;
+}
+
+.window-header {
+  width: 100%;
+  background-color: rgb(248, 248, 248);
+  height: 30px;
+  -webkit-user-select: none;
+  -webkit-app-region: drag;
+}
+
+.window-header-button,
+.window-header-button-close {
+  width: 46px;
+  height: 30px;
+  border-radius: 0px;
+  color: lightgray;
+  font-size: 0.8em;
+  -webkit-app-region: no-drag;
+}
+
+.window-header-button:hover {
+  background-color: lightgray;
+  color: grey;
+  font-size: 0.8em;
+}
+
+.window-header-button-close:hover {
+  background-color: red;
+  font-size: 0.8em;
+  color: white;
+}
+
+.window-header-button-image {
+  font-size: 10px;
+}
+
+.window-content {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.window-footer {
+  position: fixed;
+  bottom: 0;
+  background-color: rgb(0, 153, 255);
+  height: 20px;
+  width: 100%;
+}
+
+.content-header {
+  width: 100%;
+  background-color: bisque;
+  height: 60px;
+}
+
+.show-id-dialog {
+  min-width: 100px;
+  min-height: 100px;
+  -webkit-user-select: none;
+}
+
+.loading-dialog{
+  min-width: 100px;
+  min-height: 100px;
+  -webkit-user-select: none;
+  padding: 30px;
+}
+
+.pivot-menu{
+  display: inline-block;
+}
+
+.pivot-menu-button{
+  width: 30px;
+  height: 30px;
+  border-radius: 0px;
+  color: whitesmoke;
+  background-color: rgb(0, 120, 212);
+  border: rgb(0, 153, 255);
+}
+
+.pivot-menu-button-image {
+  font-size: 12px;
+}
