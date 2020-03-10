@@ -1,5 +1,6 @@
 import { BasicMessage, MessageType } from "./Message";
 import { state } from "../AppState";
+import * as Rxjs from "rxjs"
 import * as Electron from "electron";
 import * as path from "path";
 

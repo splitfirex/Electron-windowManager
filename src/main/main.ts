@@ -4,9 +4,10 @@
 import * as Electron from "electron";
 import * as path from "path";
 import * as url from "url";
-import { state } from "@/renderer/core/AppState";
-import { BasicMessage } from "@/renderer/core/comm/Message";
-import * as MessageActions from "../renderer/core/comm/messageActions";
+import { state } from "@/main/core/AppState";
+import { BasicMessage } from "@/main/core/comm/Message";
+import * as MessageActions from "./core/comm/messageActions";
+import * as RCMCommunicationsManager from "../main/core/comm/RCM/RCMCommunicationManager"
 
 let mainWindow: Electron.BrowserWindow | null;
 
@@ -43,6 +44,7 @@ function createWindow(): void {
   });
 
   state.windows["__main__"] = mainWindow;
+  RCMCommunicationsManager.init()
 }
 
 // This method will be called when Electron has finished

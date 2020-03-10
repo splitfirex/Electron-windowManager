@@ -1,4 +1,4 @@
-import { MS } from "../../core/comm/messageSender";
+import { MS } from "../../../main/core/comm/messageSender";
 
 export const commitlogin = (user: String, pass: String): Promise<String[]> => {
   return new Promise<String[]>(resolve => {

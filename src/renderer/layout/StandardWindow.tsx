@@ -13,7 +13,7 @@ import {
   Spinner,
   SpinnerSize
 } from "office-ui-fabric-react";
-import { state } from "../core/AppState";
+import { state } from "../../main/core/AppState";
 
 enum windowState {
   RESTORED,

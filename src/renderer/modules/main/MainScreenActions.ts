@@ -1,6 +1,6 @@
-import * as AppState from "../../core/AppState";
-import { MessageType } from "../../core/comm/Message";
-import { MS } from "../../core/comm/MessageSender"
+import * as AppState from "../../../main/core/AppState";
+import { MessageType } from "../../../main/core/comm/Message";
+import { MS } from "../../../main/core/comm/MessageSender"
 
 export const openWindow = (): void => {
   MS.send(
