@@ -1,4 +1,5 @@
 import * as React from "react";
+import * as Electron from "electron";
 import {
   Pivot,
   PivotLinkSize,
@@ -23,6 +24,13 @@ const pivotStyles: Partial<IStyleSet<IPivotStyles>> = {
 };
 
 export const TabManager: React.FunctionComponent = () => {
+
+  Electron.ipcRenderer.on("wee", (data: any) => {
+    console.log(data);
+  });
+
+
+
   return (
     <div>
       <Pivot

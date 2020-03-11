@@ -5,15 +5,21 @@ import * as Electron from "electron";
 import * as path from "path";
 import * as url from "url";
 import { state } from "@/main/core/AppState";
-import { BasicMessage } from "@/main/core/comm/Message";
+import { BasicMessage, MessageType } from "@/main/core/comm/Message";
 import * as MessageActions from "./core/comm/messageActions";
-import * as RCMCommunicationsManager from "../main/core/comm/RCM/RCMCommunicationManager"
+import * as RCMCommunicationsManager from "../main/core/comm/RCM/RCMCommunicationManager";
+import { OpenWindow } from "./core/comm/messageActions";
+import { MS } from "./core/comm/MessageManager";
 
 let mainWindow: Electron.BrowserWindow | null;
 
 function createWindow(): void {
+
+  Electron.ipcMain.on("sync-message", (event: any, payload: BasicMessage) => {
+    MS.receive.next(payload);
+  });
   // Create the browser window.
-  mainWindow = new Electron.BrowserWindow({
+  /* mainWindow = new Electron.BrowserWindow({
     height: 768,
     width: 1024,
     minHeight: 768,
@@ -41,10 +47,17 @@ function createWindow(): void {
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
     mainWindow = null;
-  });
+  });*/
+  OpenWindow(0,"")
+  /*MS.send({
+    event: MessageType.OPEN_WINDOW,
+    payload: {
+      windowId: "1",
+      customUrl: ""
+    }
+  });*/
 
-  state.windows["__main__"] = mainWindow;
-  RCMCommunicationsManager.init()
+  //RCMCommunicationsManager.init();
 }
 
 // This method will be called when Electron has finished
@@ -69,9 +82,7 @@ Electron.app.on("activate", () => {
   }
 });
 
-Electron.ipcMain.on("sync-message", (event: any, payload: BasicMessage) => {
-  MessageActions.processMessage(payload);
-});
+
 
 // In this file you can include the rest of your app"s specific main process
 // code. You can also put them in separate files and require them here.

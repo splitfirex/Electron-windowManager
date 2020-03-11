@@ -1,13 +1,30 @@
 export const state: Istate = {
-  user: "",
-  password: "",
-  windows: {}
+  windows: []
 };
 
 interface Istate {
-  ipcMain?: Electron.IpcMain;
-  parentWindow?: Electron.EventEmitter;
-  user: String;
-  password: String;
-  windows: { [key: string]: Electron.BrowserWindow };
+  windows: Array<IWindow>;
 }
+
+export interface ITab {
+  uuid: string;
+  order: number;
+  title: string;
+}
+
+export interface IWindow {
+  uuid: number;
+  wm: Electron.BrowserWindow;
+  tabs?: { [uuid: string]: ITab };
+}
+
+export const createNewWindow = (
+  uuid: number,
+  wm: Electron.BrowserWindow
+): IWindow => {
+  const result: IWindow = {
+    uuid: uuid,
+    wm: wm
+  };
+  return result;
+};
