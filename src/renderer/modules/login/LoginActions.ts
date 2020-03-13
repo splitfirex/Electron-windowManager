@@ -1,4 +1,4 @@
-import { MS } from "../../../main/core/comm/MessageManager";
+import { MM } from "../../../main/core/comm/MessageManager";
 
 export const commitlogin = (user: String, pass: String): Promise<String[]> => {
   return new Promise<String[]>(resolve => {
@@ -7,5 +7,5 @@ export const commitlogin = (user: String, pass: String): Promise<String[]> => {
 };
 
 export const showId = () => {
-  MS.send({ action: "show-id", data: "DATOS" });
+  MM.send({ action: "show-id", payload: { data: "DATOS" } });
 };

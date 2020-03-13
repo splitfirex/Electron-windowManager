@@ -4,20 +4,26 @@
 import * as Electron from "electron";
 import * as path from "path";
 import * as url from "url";
-import { state } from "@/main/core/AppState";
-import { BasicMessage, MessageType } from "@/main/core/comm/Message";
 import * as MessageActions from "./core/comm/messageActions";
 import * as RCMCommunicationsManager from "../main/core/comm/RCM/RCMCommunicationManager";
-import { OpenWindow } from "./core/comm/messageActions";
-import { MS } from "./core/comm/MessageManager";
+import { OpenWindow } from "@main/core/window/WindowManager";
+import { BasicMessage, MM } from "@main/core/comm/MessageManager";
 
 let mainWindow: Electron.BrowserWindow | null;
 
 function createWindow(): void {
 
   Electron.ipcMain.on("sync-message", (event: any, payload: BasicMessage) => {
-    MS.receive.next(payload);
+    console.log("Recibi mensaje");
+    console.log(payload);
+    MM.sender.next(payload);
   });
+
+  console.log("PRUEBA");
+  OpenWindow();
+
+  
+  
   // Create the browser window.
   /* mainWindow = new Electron.BrowserWindow({
     height: 768,
@@ -48,7 +54,7 @@ function createWindow(): void {
     // when you should delete the corresponding element.
     mainWindow = null;
   });*/
-  OpenWindow(0,"")
+ //  OpenWindow(0,"")
   /*MS.send({
     event: MessageType.OPEN_WINDOW,
     payload: {
@@ -58,6 +64,7 @@ function createWindow(): void {
   });*/
 
   //RCMCommunicationsManager.init();
+
 }
 
 // This method will be called when Electron has finished
@@ -81,6 +88,9 @@ Electron.app.on("activate", () => {
     createWindow();
   }
 });
+
+
+
 
 
 

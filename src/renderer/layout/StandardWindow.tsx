@@ -1,19 +1,12 @@
-import { render } from "react-dom";
-import * as React from "react";
 import * as Electron from "electron";
-import { useConstCallback } from "@uifabric/react-hooks";
 import {
   IconButton,
-  IIconProps,
-  IContextualMenuProps,
-  Stack,
-  Link,
   Modal,
-  Label,
   Spinner,
   SpinnerSize
 } from "office-ui-fabric-react";
-import { state } from "../../main/core/AppState";
+import * as React from "react";
+import { minimize, closeWindow, notifyWindowOpen } from "./StandardWindowController";
 
 enum windowState {
   RESTORED,
@@ -40,25 +33,21 @@ export const StandardWindow: React.FunctionComponent<WindowProps> = props => {
     }
   };
 
-  const minimize = () => {
-    Electron.remote.getCurrentWindow().minimize();
-  };
-
-  const close = () => {
-    Electron.remote.getCurrentWindow().close();
-  };
-
-  Electron.ipcRenderer.on("show-id", (event: any, message: any) => {
-    setShowId(true);
-    setTimeout(() => setShowId(false), 2000);
-  });
-
   Electron.remote.getCurrentWindow().on("maximize", () => {
     setStatus(windowState.MAXIMIZED);
   });
   Electron.remote.getCurrentWindow().on("unmaximize", () => {
     setStatus(windowState.RESTORED);
   });
+
+  Electron.ipcRenderer.on("show-id", (event: any, message: any) => {
+    setShowId(true);
+    setTimeout(() => setShowId(false), 2000);
+  });
+
+  React.useEffect(() => {
+    notifyWindowOpen();
+  }, []);
 
   return (
     <div className="window">
@@ -90,7 +79,7 @@ export const StandardWindow: React.FunctionComponent<WindowProps> = props => {
               className: "window-header-button-image",
               iconName: "ChromeClose"
             }}
-            onClick={close}
+            onClick={closeWindow}
           />
         </div>
         <div style={{ clear: "both" }}></div>

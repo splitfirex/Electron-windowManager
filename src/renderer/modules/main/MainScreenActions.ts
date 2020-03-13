@@ -1,20 +1,12 @@
-import * as AppState from "../../../main/core/AppState";
-import { MessageType } from "../../../main/core/comm/Message";
-import { MS } from "../../../main/core/comm/MessageManager"
+import { MM, MessageType } from "../../../main/core/comm/MessageManager";
 
 export const openWindow = (): void => {
-  MS.send(
-    {
-      windowId: "2",
-      customUrl: "Login"
-    },
-    MessageType.OPEN_WINDOW
-  );
+  MM.send({ event: MessageType.NEW_WINDOW });
 };
 
 export const startTick = (): void => {
-  MS.send({
+  MM.send({
     action: "wee",
-    data: "HOLA"
+    payload: { data: "HOLA" }
   });
 };
