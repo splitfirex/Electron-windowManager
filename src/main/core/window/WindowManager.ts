@@ -70,7 +70,7 @@ const createNewWindow = (
     uuid: uuid,
     browser: browser,
     subscription: MM.updater.subscribe(message => {
-      //TODO ver que meto aqui
+      browser.webContents.send(message.action || "sync", message);
     })
   };
   return result;

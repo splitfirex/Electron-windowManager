@@ -3,7 +3,12 @@ import {
   IconButton,
   Modal,
   Spinner,
-  SpinnerSize
+  SpinnerSize,
+  Dialog,,,,
+  DialogType
+  DialogFooter
+  PrimaryButton
+  DefaultButton
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { minimize, closeWindow, notifyWindowOpen } from "./StandardWindowController";
@@ -91,6 +96,7 @@ export const StandardWindow: React.FunctionComponent<WindowProps> = props => {
         windowId={Electron.remote.getCurrentWindow().id}
       ></IdModal>
       <LoadingModal show={showLoading}></LoadingModal>
+      
     </div>
   );
 };
@@ -117,3 +123,4 @@ const LoadingModal: React.FunctionComponent<{
     </Modal>
   );
 };
+

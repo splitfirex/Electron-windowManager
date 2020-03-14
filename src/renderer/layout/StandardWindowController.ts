@@ -10,6 +10,10 @@ export const closeWindow = () => {
   Electron.remote.getCurrentWindow().close();
 };
 
+export const openWindow = (): void => {
+  MM.send({ event: MessageType.NEW_WINDOW });
+};
+
 export const notifyWindowOpen = () => {
   console.log("Se inicia ventana nueva");
   MM.send({
