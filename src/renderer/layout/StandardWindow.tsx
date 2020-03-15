@@ -4,10 +4,10 @@ import {
   Modal,
   Spinner,
   SpinnerSize,
-  Dialog,,,,
-  DialogType
-  DialogFooter
-  PrimaryButton
+  Dialog,
+  DialogType,
+  DialogFooter,
+  PrimaryButton,
   DefaultButton
 } from "office-ui-fabric-react";
 import * as React from "react";
