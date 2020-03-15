@@ -8,11 +8,12 @@ import {
   Modal,
   IChoiceGroupOption,
   ChoiceGroup,
-  PrimaryButton
+  PrimaryButton,
+  Checkbox
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { openWindow } from "./StandardWindowController";
-import { TabContainer } from "./uicomponents/Tab";
+import { TabContainer, ITabData } from "./uicomponents/Tab";
 
 export interface IOverflowData {
   primary: IContextualMenuItem[];
@@ -71,13 +72,85 @@ const iconButtonStyles = mergeStyleSets({
   }
 });
 
+interface IComponents {
+  id: number;
+  component?: React.FunctionComponent;
+  cachedElement?: React.ReactElement;
+}
+
+export const Prueba: React.FunctionComponent = props => {
+  return <div>PEPE</div>;
+};
+
+export const Prueba1: React.FunctionComponent = props => {
+  return <div>PEPE1</div>;
+};
+
+
+export const Prueba2: React.FunctionComponent = props => {
+  return <div>PEPE2</div>;
+};
+
+
 export const TabManager: React.FunctionComponent = props => {
   const [showMenu, setShowMenu] = React.useState(false);
+  const [componentSelected, setComponentSelected] = React.useState(-1);
+  const [componentMenu, setComponentMenu] = React.useState<ITabData[]>([
+    {
+      id: 0,
+      order: 0,
+      iconName: "Cancel",
+      title: "prueba1",
+      showing: true,
+      available: true
+    },
+    {
+      id: 1,
+      order: 1,
+      iconName: "Cancel",
+      title: "prueba2",
+      showing: true,
+      available: true
+    },
+    {
+      id: 2,
+      order: 2,
+      iconName: "Cancel",
+      title: "prueba3",
+      showing: true,
+      available: true
+    }
+  ]);
+
+  const [components, setComponents] = React.useState<IComponents[]>([
+    {
+      id:0,
+      component: Prueba
+    },
+    {
+      id:1,
+      component: Prueba1
+    },
+    {
+      id:2,
+      component: Prueba2
+    }
+  ]);
+
+  const removeComponent = (id: number) => {
+    setComponentSelected(-1);
+  };
+
+  const renderComponent = () => {
+    let values = components.find(x => x.id === componentSelected);
+    if (values && values.component)
+      return React.createElement(values.component);
+  };
 
   return (
     <>
       <div className="content-tab-manager">
-        <div style={{ width: "64px", height: "32px" }}>
+        <div style={{ minWidth: 64 }}>
           <IconButton
             className="pivot-menu-button"
             onClick={openWindow}
@@ -96,19 +169,14 @@ export const TabManager: React.FunctionComponent = props => {
           />
         </div>
         <TabContainer
-          content={[
-            { id: 0, title: "Comunicaciones", icon: "UnpublishContent" },
-            { id: 1, title: "Vista estacion", icon: "UnpublishContent" },
-            { id: 2, title: "Videografico", icon: "UnpublishContent" },
-            { id: 3, title: "Libros", icon: "UnpublishContent" },
-            { id: 4, title: "Incumplimientos", icon: "UnpublishContent" },
-            { id: 5, title: "AGER", icon: "UnpublishContent" },
-            { id: 6, title: "SITRA", icon: "UnpublishContent" }
-          ]}
-          click={(value: number) => console.log(value)}
+          content={componentMenu
+            .filter(x => x.showing)
+            .map(item => item)}
+          clickRemove={(value: number) => removeComponent(value)}
+          click={(value: number) => setComponentSelected(value)}
         />
       </div>
-      <div style={{ height: "100%" }}>{props.children}</div>
+      <div className="tab-content">{renderComponent()}</div>
       <DialogSelectorMenu
         show={showMenu}
         callback={setShowMenu}
@@ -137,9 +205,10 @@ const DialogSelectorMenu: React.FunctionComponent<{
         />
       </div>
       <div style={{ padding: "0 20px 20px" }}>
-        <ChoiceGroup defaultSelectedKey="day" options={options} />
-        <ChoiceGroup defaultSelectedKey="day" options={options} />
-        <ChoiceGroup defaultSelectedKey="day" options={options} />
+        <Checkbox checkmarkIconProps={{ iconName: "Cancel" }}></Checkbox>
+        <ChoiceGroup style={{ display: "inline-block" }} options={options} />
+        <ChoiceGroup style={{ display: "inline-block" }} options={options} />
+        <ChoiceGroup style={{ display: "inline-block" }} options={options} />
         <PrimaryButton style={{ float: "right" }} text="PRUEBA"></PrimaryButton>
         <div style={{ clear: "both" }}></div>
       </div>
