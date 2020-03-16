@@ -78,15 +78,26 @@ interface IComponents {
   cachedElement?: React.ReactElement;
 }
 
-export const Prueba: React.FunctionComponent = props => {
-  const [actualizar, setActualizar] = React.useState("PEPE");
+export const LanguageContext = React.createContext({
+  language: "en",
+  setLanguage: (value: string) => {},
+  init: false,
+  setInit: (value: boolean) => {}
+});
 
+export const Prueba: React.FunctionComponent = props => {
+  const { language, setLanguage, init, setInit } = React.useContext(
+    LanguageContext
+  );
   React.useEffect(() => {
     let cont = 0;
-    setTimeout(() => setActualizar(actualizar + cont), 1000);
-  }, [actualizar]);
+    if (!init) {
+      setInterval(() => setLanguage(language + "" + cont++), 1000);
+      setInit(true);
+    }
+  }, []);
 
-  return <div>{actualizar}</div>;
+  return <div>{language}</div>;
 };
 
 export const Prueba1: React.FunctionComponent = props => {
@@ -100,6 +111,10 @@ export const Prueba2: React.FunctionComponent = props => {
 export const TabManager: React.FunctionComponent = props => {
   const [showMenu, setShowMenu] = React.useState(false);
   const [componentSelected, setComponentSelected] = React.useState(-1);
+  const [language, setLanguage] = React.useState("en");
+  const [init, setInit] = React.useState(false);
+  const value = { language, setLanguage, init, setInit };
+
   const [componentMenu, setComponentMenu] = React.useState<ITabData[]>([
     {
       id: 0,
@@ -183,7 +198,11 @@ export const TabManager: React.FunctionComponent = props => {
           click={(value: number) => setComponentSelected(value)}
         />
       </div>
-      <div className="tab-content">{renderComponent()}</div>
+      <div className="tab-content">
+        <LanguageContext.Provider value={value}>
+          {renderComponent()}
+        </LanguageContext.Provider>
+      </div>
       <DialogSelectorMenu
         show={showMenu}
         callback={setShowMenu}
