@@ -79,18 +79,23 @@ interface IComponents {
 }
 
 export const Prueba: React.FunctionComponent = props => {
-  return <div>PEPE</div>;
+  const [actualizar, setActualizar] = React.useState("PEPE");
+
+  React.useEffect(() => {
+    let cont = 0;
+    setTimeout(() => setActualizar(actualizar + cont), 1000);
+  }, [actualizar]);
+
+  return <div>{actualizar}</div>;
 };
 
 export const Prueba1: React.FunctionComponent = props => {
   return <div>PEPE1</div>;
 };
 
-
 export const Prueba2: React.FunctionComponent = props => {
   return <div>PEPE2</div>;
 };
-
 
 export const TabManager: React.FunctionComponent = props => {
   const [showMenu, setShowMenu] = React.useState(false);
@@ -124,15 +129,15 @@ export const TabManager: React.FunctionComponent = props => {
 
   const [components, setComponents] = React.useState<IComponents[]>([
     {
-      id:0,
+      id: 0,
       component: Prueba
     },
     {
-      id:1,
+      id: 1,
       component: Prueba1
     },
     {
-      id:2,
+      id: 2,
       component: Prueba2
     }
   ]);
@@ -141,10 +146,14 @@ export const TabManager: React.FunctionComponent = props => {
     setComponentSelected(-1);
   };
 
-  const renderComponent = () => {
+  const renderComponent = (): React.ReactElement | undefined => {
     let values = components.find(x => x.id === componentSelected);
-    if (values && values.component)
-      return React.createElement(values.component);
+    if (values && values.component) {
+      if (values.cachedElement === undefined)
+        values.cachedElement = React.createElement(values.component);
+
+      return values.cachedElement;
+    }
   };
 
   return (
@@ -169,9 +178,7 @@ export const TabManager: React.FunctionComponent = props => {
           />
         </div>
         <TabContainer
-          content={componentMenu
-            .filter(x => x.showing)
-            .map(item => item)}
+          content={componentMenu.filter(x => x.showing).map(item => item)}
           clickRemove={(value: number) => removeComponent(value)}
           click={(value: number) => setComponentSelected(value)}
         />
