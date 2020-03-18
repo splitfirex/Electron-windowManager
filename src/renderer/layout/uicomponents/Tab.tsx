@@ -8,61 +8,58 @@ import {
   IconButton
 } from "office-ui-fabric-react";
 import ReactDOM from "react-dom";
-
-export interface ITabData {
-  id: number;
-  order: number;
-  title: string;
-  iconName: string;
-  available: boolean;
-  showing: boolean;
-}
+import {
+  IAbstractComponent,
+  ContextTabs
+} from "@/renderer/modules/AbstractComponent";
 
 export const TabContainer: React.FunctionComponent<{
-  content: ITabData[];
-  click: (id: number) => void;
-  clickRemove: (id: number) => void;
-}> = props => {
-  const currentElement = React.useRef<ReactSortable<ITabData>>(null);
-  const [selected, setSelected] = React.useState(-1);
-  const [state, setState] = React.useState<ITabData[]>([]);
-
-  const removeElement = (id: number) => {
-    setSelected(-1);
-    setState(state.filter(x => x.id !== id));
-  };
+  content: IAbstractComponent[];
+  callback: (update: boolean, action: IAbstractComponent[]) => void;
+}> = ({ content, callback }) => {
+  //const currentElement = React.useRef<ReactSortable<IAbstractComponent>>();
+  const { selectedTab, setSelectedTab } = React.useContext(ContextTabs);
+  const [tabs, setTabs] = React.useState<IAbstractComponent[]>(content);
 
   React.useEffect(() => {
-    setState(props.content);
-  }, []);
+    setTabs(content);
+  }, [content]);
+
+  const removeElement = (id: number) => {
+    setSelectedTab(-1);
+    let newState = tabs.find(x => x.id === id);
+    if (newState) newState.showing = false;
+    callback(true, tabs);
+  };
 
   const sortable = (
     <ReactSortable
       tag={CustomComponent}
       delay={2}
       animation={500}
-      ref={currentElement}
-      list={state}
-      setList={newState => {
-        setState(newState);
+      //ref={currentElement}
+      list={tabs}
+      setList={newTabs => {
+        setTabs(newTabs);
       }}
     >
-      {state.map(item => (
-        <DefaultButton
-          style={{
-            borderRadius: 0,
-            borderBottomColor: item.id === selected ? "white" : ""
-          }}
-          iconProps={{ iconName: item.iconName }}
-          text={item.title}
-          key={item.id}
-          primary={item.id !== selected}
-          onClick={() => {
-            props.click(item.id);
-            setSelected(item.id);
-          }}
-        />
-      ))}
+      {tabs
+        .filter(x => x.showing)
+        .map(item => (
+          <DefaultButton
+            style={{
+              borderRadius: 0,
+              borderBottomColor: item.id === selectedTab ? "white" : ""
+            }}
+            iconProps={{ iconName: item.iconName }}
+            text={item.title}
+            key={"TAB_" + item.id}
+            primary={item.id !== selectedTab}
+            onClick={() => {
+              setSelectedTab(item.id);
+            }}
+          />
+        ))}
     </ReactSortable>
   );
 
@@ -70,13 +67,12 @@ export const TabContainer: React.FunctionComponent<{
     <>
       {sortable}
       <div className="tab-extended">
-        {selected !== -1 && (
+        {selectedTab !== -1 && (
           <IconButton
             primary
             className="pivot-menu-button"
             onClick={() => {
-              props.clickRemove(selected);
-              removeElement(selected);
+              removeElement(selectedTab);
             }}
             iconProps={{
               className: "pivot-menu-button-image",

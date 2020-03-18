@@ -9,11 +9,14 @@ import {
   IChoiceGroupOption,
   ChoiceGroup,
   PrimaryButton,
-  Checkbox
+  Checkbox,
+  CompoundButton,
+  DefaultButton
 } from "office-ui-fabric-react";
 import * as React from "react";
 import { openWindow } from "./StandardWindowController";
-import { TabContainer, ITabData } from "./uicomponents/Tab";
+import { TabContainer } from "./uicomponents/Tab";
+import { IAbstractComponent, ContextTabs } from "../modules/AbstractComponent";
 
 export interface IOverflowData {
   primary: IContextualMenuItem[];
@@ -72,171 +75,118 @@ const iconButtonStyles = mergeStyleSets({
   }
 });
 
-interface IComponents {
-  id: number;
-  component?: React.FunctionComponent;
-  cachedElement?: React.ReactElement;
+interface TabManagerProps {
+  children?: never;
+  listComponents: React.ReactElement<IAbstractComponent>[];
 }
 
-export const LanguageContext = React.createContext({
-  language: "en",
-  setLanguage: (value: string) => {},
-  init: false,
-  setInit: (value: boolean) => {}
-});
-
-export const Prueba: React.FunctionComponent = props => {
-  const { language, setLanguage, init, setInit } = React.useContext(
-    LanguageContext
-  );
-  React.useEffect(() => {
-    let cont = 0;
-    if (!init) {
-      setInterval(() => setLanguage(language + "" + cont++), 1000);
-      setInit(true);
-    }
-  }, []);
-
-  return <div>{language}</div>;
-};
-
-export const Prueba1: React.FunctionComponent = props => {
-  return <div>PEPE1</div>;
-};
-
-export const Prueba2: React.FunctionComponent = props => {
-  return <div>PEPE2</div>;
-};
-
-export const TabManager: React.FunctionComponent = props => {
+export const TabManager: React.FunctionComponent<TabManagerProps> = props => {
   const [showMenu, setShowMenu] = React.useState(false);
-  const [componentSelected, setComponentSelected] = React.useState(-1);
-  const [language, setLanguage] = React.useState("en");
-  const [init, setInit] = React.useState(false);
-  const value = { language, setLanguage, init, setInit };
+  const [components, setComponents] = React.useState<
+    React.ReactElement<IAbstractComponent>[]
+  >(props.listComponents);
+  const [componentsMenu, setComponentsMenu] = React.useState(
+    props.listComponents.map(x => JSON.parse(JSON.stringify(x.props)))
+  );
 
-  const [componentMenu, setComponentMenu] = React.useState<ITabData[]>([
-    {
-      id: 0,
-      order: 0,
-      iconName: "Cancel",
-      title: "prueba1",
-      showing: true,
-      available: true
-    },
-    {
-      id: 1,
-      order: 1,
-      iconName: "Cancel",
-      title: "prueba2",
-      showing: true,
-      available: true
-    },
-    {
-      id: 2,
-      order: 2,
-      iconName: "Cancel",
-      title: "prueba3",
-      showing: true,
-      available: true
+  const [selectedTab, setSelectedTab] = React.useState(-1);
+
+  const updateComponentsMenu = (
+    update: boolean,
+    list: IAbstractComponent[]
+  ) => {
+    if (update) {
+      console.log(list);
+      setComponentsMenu([...list]);
     }
-  ]);
-
-  const [components, setComponents] = React.useState<IComponents[]>([
-    {
-      id: 0,
-      component: Prueba
-    },
-    {
-      id: 1,
-      component: Prueba1
-    },
-    {
-      id: 2,
-      component: Prueba2
-    }
-  ]);
-
-  const removeComponent = (id: number) => {
-    setComponentSelected(-1);
-  };
-
-  const renderComponent = (): React.ReactElement | undefined => {
-    let values = components.find(x => x.id === componentSelected);
-    if (values && values.component) {
-      if (values.cachedElement === undefined)
-        values.cachedElement = React.createElement(values.component);
-
-      return values.cachedElement;
-    }
+    setShowMenu(false);
   };
 
   return (
     <>
-      <div className="content-tab-manager">
-        <div style={{ minWidth: 64 }}>
-          <IconButton
-            className="pivot-menu-button"
-            onClick={openWindow}
-            iconProps={{
-              className: "pivot-menu-button-image",
-              iconName: "OpenInNewWindow"
-            }}
-          />
-          <IconButton
-            className="pivot-menu-button"
-            onClick={() => setShowMenu(true)}
-            iconProps={{
-              className: "pivot-menu-button-image",
-              iconName: "OpenInNewTab"
-            }}
+      <ContextTabs.Provider value={{ selectedTab, setSelectedTab }}>
+        <div className="content-tab-manager">
+          <div style={{ minWidth: 64 }}>
+            <IconButton
+              className="pivot-menu-button"
+              onClick={openWindow}
+              iconProps={{
+                className: "pivot-menu-button-image",
+                iconName: "OpenInNewTab"
+              }}
+            />
+            <IconButton
+              className="pivot-menu-button"
+              onClick={() => setShowMenu(true)}
+              iconProps={{
+                className: "pivot-menu-button-image",
+                iconName: "GridViewMedium"
+              }}
+            />
+          </div>
+          <TabContainer
+            content={componentsMenu}
+            callback={updateComponentsMenu}
           />
         </div>
-        <TabContainer
-          content={componentMenu.filter(x => x.showing).map(item => item)}
-          clickRemove={(value: number) => removeComponent(value)}
-          click={(value: number) => setComponentSelected(value)}
+        <div className="tab-content">{components}</div>
+        <DialogSelectorMenu
+          content={componentsMenu}
+          show={showMenu}
+          callback={updateComponentsMenu}
         />
-      </div>
-      <div className="tab-content">
-        <LanguageContext.Provider value={value}>
-          {renderComponent()}
-        </LanguageContext.Provider>
-      </div>
-      <DialogSelectorMenu
-        show={showMenu}
-        callback={setShowMenu}
-      ></DialogSelectorMenu>
+      </ContextTabs.Provider>
     </>
   );
 };
 
 const DialogSelectorMenu: React.FunctionComponent<{
+  content: IAbstractComponent[];
   show: boolean;
-  callback: (action: boolean) => void;
-}> = ({ show, callback }): JSX.Element => {
-  const options: IChoiceGroupOption[] = [
-    { key: "day", text: "Day", iconProps: { iconName: "CalendarDay" } }
-  ];
+  callback: (update: boolean, action: IAbstractComponent[]) => void;
+}> = ({ content, show, callback }): JSX.Element => {
+  const [options, setOptions] = React.useState(content);
+
+  React.useEffect(() => {
+    setOptions(content);
+  }, [content]);
+
+  const toggle = (n: number) => {
+    let option = options.find(x => x.id === n);
+    if (option) option.showing = !option.showing;
+    setOptions([...options]);
+  };
 
   return (
-    <Modal isOpen={show} isBlocking={true}>
+    <Modal isOpen={show} isBlocking={true} >
       <div className={contentStyles.header}>
         <span>Menu de opciones</span>
         <IconButton
           styles={iconButtonStyles}
           iconProps={{ iconName: "Cancel" }}
           ariaLabel="Close popup modal"
-          onClick={() => callback(false)}
+          onClick={() => callback(false, options)}
         />
       </div>
       <div style={{ padding: "0 20px 20px" }}>
-        <Checkbox checkmarkIconProps={{ iconName: "Cancel" }}></Checkbox>
-        <ChoiceGroup style={{ display: "inline-block" }} options={options} />
-        <ChoiceGroup style={{ display: "inline-block" }} options={options} />
-        <ChoiceGroup style={{ display: "inline-block" }} options={options} />
-        <PrimaryButton style={{ float: "right" }} text="PRUEBA"></PrimaryButton>
-        <div style={{ clear: "both" }}></div>
+        {options
+          .filter(x => x.available)
+          .map(x => (
+            <CompoundButton
+              key={"cb" + x.id}
+              onClick={() => toggle(x.id)}
+              primary
+              checked={x.showing}
+              style={{ margin: "5px" }}
+              iconProps={{ iconName: x.iconName }}
+              secondaryText="This is the secondary text."
+            >
+              {x.title}
+            </CompoundButton>
+          ))}
+        <DefaultButton onClick={() => callback(true, options)}>
+          Actualizar
+        </DefaultButton>
       </div>
     </Modal>
   );

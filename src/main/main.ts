@@ -8,6 +8,7 @@ import * as MessageActions from "./core/comm/messageActions";
 import * as RCMCommunicationsManager from "../main/core/comm/RCM/RCMCommunicationManager";
 import { OpenWindow } from "@main/core/window/WindowManager";
 import { BasicMessage, MM } from "@main/core/comm/MessageManager";
+import { init } from "./core/AppState";
 
 let mainWindow: Electron.BrowserWindow | null;
 
@@ -21,6 +22,7 @@ function createWindow(): void {
 
   console.log("PRUEBA");
   OpenWindow();
+  init();
 
   
   

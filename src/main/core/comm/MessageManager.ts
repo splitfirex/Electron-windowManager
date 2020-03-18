@@ -2,7 +2,7 @@ import * as Electron from "electron";
 import { Subject } from "rxjs";
 
 export class MM {
-  static send = ({
+  static sendFrom = ({
     payload,
     event,
     action,
@@ -28,6 +28,35 @@ export class MM {
     console.log(BasicM);
     console.log(Electron.ipcRenderer);
     if (Electron.ipcRenderer) Electron.ipcRenderer.send("sync-message", BasicM);
+  };
+
+  static sendTo = ({
+    payload,
+    event,
+    action,
+    idSender,
+    idReceiver
+  }: {
+    payload?: any;
+    event?: MessageType;
+    action?: string;
+    idSender?: number;
+    idReceiver?: number;
+  }) => {
+    let BasicM: BasicMessage = {
+      event: event || MessageType.SYNC,
+      action: action,
+      idSender: -1,
+      idReceiver: idReceiver || 0,
+      payload: payload,
+      resend: true
+    };
+
+    try {
+      MM.updater.next(BasicM);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   static sender = new Subject<BasicMessage>();
