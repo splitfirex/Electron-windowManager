@@ -15,6 +15,7 @@ export interface IAbstractComponent {
   order: number;
   iconName: string;
   title: string;
+  subTitle: string;
   showing: boolean;
   available: boolean;
 }

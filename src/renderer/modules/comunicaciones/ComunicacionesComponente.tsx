@@ -22,6 +22,7 @@ ComunicacionesComponent.defaultProps = {
   order: 0,
   iconName: "Phone",
   title: "Comunicaciones",
+  subTitle: "Modulo de comunicaciones",
   showing: false,
   available: true
 };

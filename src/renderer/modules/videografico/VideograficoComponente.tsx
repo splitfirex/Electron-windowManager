@@ -23,6 +23,7 @@ VideograficoComponent.defaultProps = {
   order: 0,
   iconName: "Nav2DMapView",
   title: "Videografico",
+  subTitle: "Visualizador del entorno virtual",
   showing: false,
   available: true
-}
+};

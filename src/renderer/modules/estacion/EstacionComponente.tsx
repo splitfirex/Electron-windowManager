@@ -22,6 +22,7 @@ EstacionComponent.defaultProps = {
   id: 2,
   order: 0,
   iconName: "Train",
+  subTitle: "Visualizador de estacion",
   title: "Estación",
   showing: false,
   available: true

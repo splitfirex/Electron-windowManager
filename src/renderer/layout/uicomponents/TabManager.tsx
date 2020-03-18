@@ -14,9 +14,12 @@ import {
   DefaultButton
 } from "office-ui-fabric-react";
 import * as React from "react";
-import { openWindow } from "./StandardWindowController";
-import { TabContainer } from "./uicomponents/Tab";
-import { IAbstractComponent, ContextTabs } from "../modules/AbstractComponent";
+import { openWindow } from "../StandardWindowController";
+import { TabContainer } from "./TabContainer";
+import {
+  IAbstractComponent,
+  ContextTabs
+} from "../../modules/AbstractComponent";
 
 export interface IOverflowData {
   primary: IContextualMenuItem[];
@@ -120,7 +123,7 @@ export const TabManager: React.FunctionComponent<TabManagerProps> = props => {
               onClick={() => setShowMenu(true)}
               iconProps={{
                 className: "pivot-menu-button-image",
-                iconName: "GridViewMedium"
+                iconName: "Tiles"
               }}
             />
           </div>
@@ -158,7 +161,7 @@ const DialogSelectorMenu: React.FunctionComponent<{
   };
 
   return (
-    <Modal isOpen={show} isBlocking={true} >
+    <Modal isOpen={show} isBlocking={true} styles={{ main: { width: "50%" } }}>
       <div className={contentStyles.header}>
         <span>Menu de opciones</span>
         <IconButton
@@ -179,7 +182,7 @@ const DialogSelectorMenu: React.FunctionComponent<{
               checked={x.showing}
               style={{ margin: "5px" }}
               iconProps={{ iconName: x.iconName }}
-              secondaryText="This is the secondary text."
+              secondaryText={x.subTitle}
             >
               {x.title}
             </CompoundButton>
