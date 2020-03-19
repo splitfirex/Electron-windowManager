@@ -94,6 +94,8 @@ export const TabManager: React.FunctionComponent<TabManagerProps> = props => {
 
   const [selectedTab, setSelectedTab] = React.useState(-1);
 
+  React.useEffect(() => {}, []);
+
   const updateComponentsMenu = (
     update: boolean,
     list: IAbstractComponent[]

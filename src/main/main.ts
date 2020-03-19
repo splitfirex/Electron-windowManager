@@ -14,9 +14,7 @@ let mainWindow: Electron.BrowserWindow | null;
 
 function createWindow(): void {
 
-  Electron.ipcMain.on("sync-message", (event: any, payload: BasicMessage) => {
-    console.log("Recibi mensaje");
-    console.log(payload);
+  Electron.ipcMain.on("async-message", (event: any, payload: BasicMessage) => {
     MM.sender.next(payload);
   });
 

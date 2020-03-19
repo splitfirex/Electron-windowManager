@@ -1,5 +1,5 @@
 import * as Electron from "electron";
-import { Subject } from "rxjs";
+import { Subject, Observable, BehaviorSubject } from "rxjs";
 
 export class MM {
   static sendFrom = ({
@@ -24,10 +24,7 @@ export class MM {
       resend: true
     };
 
-    //  if(Electron.ipcMain) Electron.ipcMain.emit("sync-message", BasicM);
-    console.log(BasicM);
-    console.log(Electron.ipcRenderer);
-    if (Electron.ipcRenderer) Electron.ipcRenderer.send("sync-message", BasicM);
+    if (Electron.ipcRenderer) Electron.ipcRenderer.send("async-message", BasicM);
   };
 
   static sendTo = ({

@@ -19,3 +19,12 @@ export interface IAbstractComponent {
   showing: boolean;
   available: boolean;
 }
+
+
+export class AbstractComponent extends React.PureComponent<IAbstractComponent,{}>{
+
+  constructor(props: IAbstractComponent){
+    super(props);
+  }
+
+}
