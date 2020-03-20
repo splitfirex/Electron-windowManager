@@ -41,7 +41,7 @@ export const VideograficoComponent: React.FunctionComponent<IAbstractComponent> 
       style={{ display: selectedTab === props.id ? "Block" : "none" }}
     >
       VideograficoComponent {props.id}{" "}
-      {valor.map(x => (
+      {valor.slice(valor.length-50,valor.length).map(x => (
         <div key={x}>{x}</div>
       ))}
     </div>

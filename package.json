@@ -43,6 +43,7 @@
     "react-router-dom": "^5.1.2",
     "react-sortablejs": "^2.0.11",
     "rxjs": "^6.0.0",
+    "soap": "^0.31.0",
     "socket.io": "^2.3.0",
     "socket.io-json-parser": "^2.1.0",
     "sockjs-client": "^1.4.0",
