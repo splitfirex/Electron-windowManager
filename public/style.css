@@ -222,3 +222,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #555; 
 }
+
+.videograficoSVG{
+  height: 100%;
+  width: 100%;
+}
+.videograficoSVG > svg{
+  height: 100%;
+  width: 100%;
+}

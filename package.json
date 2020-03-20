@@ -32,6 +32,7 @@
   "dependencies": {
     "@stomp/rx-stomp": "^0.3.4",
     "@stomp/stompjs": "^5.4.3",
+    "@svgr/core": "^5.2.0",
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
     "@types/sockjs-client": "^1.1.1",
@@ -40,8 +41,10 @@
     "react": "^16.12.0",
     "react-awesome-tabs": "^0.1.0",
     "react-dom": "^16.12.0",
+    "react-inlinesvg": "^1.2.0",
     "react-router-dom": "^5.1.2",
     "react-sortablejs": "^2.0.11",
+    "react-svgmt": "^1.1.11",
     "rxjs": "^6.0.0",
     "soap": "^0.31.0",
     "socket.io": "^2.3.0",
