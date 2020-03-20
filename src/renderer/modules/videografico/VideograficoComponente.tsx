@@ -34,7 +34,7 @@ export const VideograficoComponent: React.FunctionComponent<
   );
   const { selectedTab } = React.useContext(ContextTabs);
   const [valor, setValor] = React.useState<number[]>([0]);
-  const [referencia, setReferencia]= React.useState(React.useRef(null));
+  const [currentMouseEvent,setCurrentMouseEvent] =React.useState<MouseEvent>();
   
   const processTick = (sender: any, data: BasicMessage) => {
     let newValor = [...valor];
@@ -60,7 +60,7 @@ export const VideograficoComponent: React.FunctionComponent<
     if (linkRef.current) {
       // @ts-ignore
       linkRef.current.childNodes.forEach(x => {
-        x.onclick = () => onShowContextualMenu(x,true);
+        x.onclick = (event :MouseEvent) => onShowContextualMenu(x,event,true);
       });
     }
 
@@ -76,8 +76,8 @@ export const VideograficoComponent: React.FunctionComponent<
   }, [valor]);
 
   const [showContextualMenu, setShowContextualMenu] = React.useState(false);
-  const onShowContextualMenu = (element : any, b: boolean) => {
-    setReferencia(element);
+  const onShowContextualMenu = (element : any,event : MouseEvent, b: boolean) => {
+    setCurrentMouseEvent(event);
     setShowContextualMenu(b);
   };
   const onHideContextualMenu = () => {
@@ -151,7 +151,8 @@ export const VideograficoComponent: React.FunctionComponent<
       <div className="videograficoSVG">{loadedSVG}</div>
 
       <ContextualMenu
-        target={referencia}
+      
+        target={currentMouseEvent}
         items={menuItems}
         hidden={!showContextualMenu}
         onItemClick={onHideContextualMenu}
