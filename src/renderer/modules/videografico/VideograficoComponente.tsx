@@ -17,12 +17,12 @@ export const VideograficoComponent: React.FunctionComponent<
 > & {
   defaultProps: Partial<IAbstractComponent>;
 } = props => {
-  const linkRef = React.useRef(null);
-  
+  const linkRef = React.useRef<HTMLElement>(null);
+
   const svgCode = `
   <svg xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink">
-    <rect x="10" y="10" height="100" width="100"
+    <rect id="pepe" x="10" y="10" height="100" width="100"
       style="stroke:#ff0000; fill: #0000ff"/>
   </svg>
   `;
@@ -34,8 +34,10 @@ export const VideograficoComponent: React.FunctionComponent<
   );
   const { selectedTab } = React.useContext(ContextTabs);
   const [valor, setValor] = React.useState<number[]>([0]);
-  const [currentMouseEvent,setCurrentMouseEvent] =React.useState<MouseEvent>();
-  
+  const [currentMouseEvent, setCurrentMouseEvent] = React.useState<
+    MouseEvent
+  >();
+
   const processTick = (sender: any, data: BasicMessage) => {
     let newValor = [...valor];
 
@@ -57,26 +59,25 @@ export const VideograficoComponent: React.FunctionComponent<
   React.useEffect(() => {
     Electron.ipcRenderer.on("/videografico", processTick);
 
-    if (linkRef.current) {
-      // @ts-ignore
-      linkRef.current.childNodes.forEach(x => {
-        x.onclick = (event :MouseEvent) => onShowContextualMenu(x,event,true);
-      });
-    }
+    linkRef.current?.childNodes.forEach((x: HTMLElement) => {
+      x.onmousedown = (event: MouseEvent) =>
+        event.which == 3 ? onShowContextualMenu(x, event, true) : undefined;
+    });
 
     return () => {
       Electron.ipcRenderer.removeListener("/videografico", processTick);
-      // @ts-ignore
-      if (linkRef.current)
-        // @ts-ignore
-        linkRef.current.childNodes.forEach(x => {
-          x.onclick = null;
-        });
+      linkRef.current?.childNodes.forEach((x: HTMLElement) => {
+        x.onmousedown = null;
+      });
     };
   }, [valor]);
 
   const [showContextualMenu, setShowContextualMenu] = React.useState(false);
-  const onShowContextualMenu = (element : any,event : MouseEvent, b: boolean) => {
+  const onShowContextualMenu = (
+    element: any,
+    event: MouseEvent,
+    b: boolean
+  ) => {
     setCurrentMouseEvent(event);
     setShowContextualMenu(b);
   };
@@ -88,55 +89,11 @@ export const VideograficoComponent: React.FunctionComponent<
     {
       key: "newItem",
       text: "New",
-      onClick: () => console.log("New clicked")
-    },
-    {
-      key: "divider_1",
-      itemType: ContextualMenuItemType.Divider
-    },
-    {
-      key: "rename",
-      text: "Rename",
-      onClick: () => console.log("Rename clicked")
-    },
-    {
-      key: "edit",
-      text: "Edit",
-      onClick: () => console.log("Edit clicked")
-    },
-    {
-      key: "properties",
-      text: "Properties",
-      onClick: () => console.log("Properties clicked")
-    },
-    {
-      key: "linkNoTarget",
-      text: "Link same window",
-      href: "http://bing.com"
-    },
-    {
-      key: "linkWithTarget",
-      text: "Link new window",
-      href: "http://bing.com",
-      target: "_blank"
-    },
-    {
-      key: "linkWithOnClick",
-      name: "Link click",
-      href: "http://bing.com",
-      onClick: (
-        ev: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>
-      ) => {
-        alert("Link clicked");
-        ev.preventDefault();
-      },
-      target: "_blank"
-    },
-    {
-      key: "disabled",
-      text: "Disabled item",
-      disabled: true,
-      onClick: () => console.error("Disabled item should not be clickable.")
+      onClick: () => {
+        linkRef.current?.childNodes.forEach((x: SVGRectElement) => {
+          x.setAttribute("style", "fill:#ff0000");
+        });
+      }
     }
   ];
 
@@ -149,9 +106,9 @@ export const VideograficoComponent: React.FunctionComponent<
       }}
     >
       <div className="videograficoSVG">{loadedSVG}</div>
+      {valor.slice(valor.length-50,valor.length).map(x=><div>{x}</div>)}
 
       <ContextualMenu
-      
         target={currentMouseEvent}
         items={menuItems}
         hidden={!showContextualMenu}

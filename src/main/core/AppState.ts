@@ -24,7 +24,7 @@ export const init = () => {
       payload: appState.videografico.length
     });
     appState.videografico.push(appState.videografico.length);
-  }, 100);
+  }, 1000);
   setInterval(() => {
     MM.sendTo({
       event: MessageType.SYNC,
