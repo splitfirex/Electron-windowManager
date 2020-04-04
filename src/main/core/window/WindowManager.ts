@@ -16,9 +16,7 @@ export interface IWindowManager {
 
 export class WindowManager implements IWindowManager {
   public getAvailableComponents(windowid: number) {
-    return components.filter(
-      x => x.state.available || x.state.currentWindow === windowid
-    );
+    return components;
   }
 
   public assingComponentWindow(
@@ -42,7 +40,7 @@ export class WindowManager implements IWindowManager {
           (x.state.currentWindow = windowId);
       });
 
-    return components.filter(x => x.state.currentWindow === windowId);
+    return components;
   }
 
   WS: IWindowState = {

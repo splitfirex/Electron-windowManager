@@ -90,47 +90,30 @@ export const TabManager: React.FunctionComponent = props => {
   const [showMenu, setShowMenu] = React.useState(false);
   const [components, setComponents] = React.useState<React.ReactElement[]>([]);
   const [componentsMenu, setComponentsMenu] = React.useState<any>([]);
-
   const [selectedTab, setSelectedTab] = React.useState(-1);
-
-  React.useEffect(() => {
-    getAvailableComponents(Electron.remote.getCurrentWindow().id).then(
-      components => {
-        let newComponents = components.map(ComponentsLibrary);
-        //setComponents(newComponents);
-        setComponentsMenu(
-          newComponents.map((x: any) => JSON.parse(JSON.stringify(x.props)))
-        );
-      }
-    );
-  }, []);
 
   const updateComponentsMenu = (
     update: boolean,
     list: IComponentDefinition[]
   ) => {
-    if (update) {
-      console.log(list);
-      assingComponentWindow(list.filter(x => x.state.showing)).then(
-        listComponents => {
-          setComponents(listComponents.map(ComponentsLibrary));
-          setComponentsMenu(list);
-        }
-      );
-      //setComponentsMenu([...list]);
-    }
-    setShowMenu(false);
+    if (update)
+      assingComponentWindow(list.filter(x => x.state.showing && (x.state.currentWindow === Electron.remote.getCurrentWindow().id
+        || x.state.currentWindow === undefined))).then(
+          listComponents => {
+            setComponents(listComponents.filter(x => x.state.showing && (x.state.currentWindow === Electron.remote.getCurrentWindow().id)).map(ComponentsLibrary));
+            setComponentsMenu([...listComponents]);
+            setShowMenu(false);
+          }
+        );
+    else
+      setShowMenu(false);
+
   };
 
   const loadMenu = () => {
     getAvailableComponents(Electron.remote.getCurrentWindow().id).then(
       components => {
-        componentsMenu.forEach((element: any) => {
-          if (components.map(x => x.component).indexOf(element.component) != -1)
-            element.available = true;
-          else element.available = false;
-        });
-        setComponentsMenu(componentsMenu);
+        setComponentsMenu([...components]);
         setShowMenu(true);
       }
     );
@@ -168,6 +151,7 @@ export const TabManager: React.FunctionComponent = props => {
           content={componentsMenu}
           show={showMenu}
           callback={updateComponentsMenu}
+          windowid={Electron.remote.getCurrentWindow().id}
         />
       </ContextTabs.Provider>
     </>
@@ -177,8 +161,9 @@ export const TabManager: React.FunctionComponent = props => {
 const DialogSelectorMenu: React.FunctionComponent<{
   content: IComponentDefinition[];
   show: boolean;
+  windowid: number;
   callback: (update: boolean, action: IComponentDefinition[]) => void;
-}> = ({ content, show, callback }): JSX.Element => {
+}> = ({ content, show, callback, windowid }): JSX.Element => {
   const [options, setOptions] = React.useState(content);
 
   React.useEffect(() => {
@@ -208,7 +193,7 @@ const DialogSelectorMenu: React.FunctionComponent<{
             key={"cb" + x.id}
             onClick={() => toggle(x.id)}
             primary
-            disabled={!x.state.available}
+            disabled={!(x.state.available || x.state.currentWindow === windowid)}
             checked={x.state.showing}
             style={{ margin: "5px" }}
             iconProps={{ iconName: x.iconName }}

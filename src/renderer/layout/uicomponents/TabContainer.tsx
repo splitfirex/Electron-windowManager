@@ -8,6 +8,7 @@ import {
   IconButton
 } from "office-ui-fabric-react";
 import ReactDOM from "react-dom";
+import * as Electron from "electron";
 import {
   IAbstractComponentProp,
   ContextTabs
@@ -23,6 +24,8 @@ export const TabContainer: React.FunctionComponent<{
   const [tabs, setTabs] = React.useState<IComponentDefinition[]>(content);
 
   React.useEffect(() => {
+    let value = content.some(x=> x.state.showing && x.state.currentWindow === Electron.remote.getCurrentWindow().id);
+    if(!value) setSelectedTab(-1);
     setTabs(content);
   }, [content]);
 
@@ -45,16 +48,16 @@ export const TabContainer: React.FunctionComponent<{
       }}
     >
       {tabs
-        .filter(x => x.state.showing)
+        .filter(x => x.state.showing && x.state.currentWindow === Electron.remote.getCurrentWindow().id)
         .map(item => (
           <DefaultButton
+            key={"TAB_" + item.id}
             style={{
               borderRadius: 0,
               borderBottomColor: item.id === selectedTab ? "white" : ""
             }}
             iconProps={{ iconName: item.iconName }}
             text={item.title}
-            key={"TAB_" + item.id}
             primary={item.id !== selectedTab}
             onClick={() => {
               setSelectedTab(item.id);
