@@ -4,7 +4,7 @@
   "description": "Generic window manager with tabs electron",
   "main": "./dist/main.bundle.js",
   "scripts": {
-    "start": "electron --inspect=5858 ./dist/main.bundle.js",
+    "start": "electron --inspect-brk=5858 ./dist/main.bundle.js",
     "dev": "rimraf dist && cross-env NODE_ENV=development webpack --watch --progress --colors",
     "prod": "rimraf dist && cross-env NODE_ENV=production webpack --progress --colors",
     "test": "mocha -r ts-node/register -r tsconfig-paths/register \"test/**/*.ts\"",
@@ -13,7 +13,7 @@
   },
   "build": {
     "appId": "com.devtography.electron_boilerplate",
-    "productName": "Electron+React+TypeScript Boilerplate",
+    "productName": "Generic window manager",
     "directories": {
       "app": "./dist/",
       "output": "./out/"
@@ -36,6 +36,8 @@
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
     "@types/sockjs-client": "^1.1.1",
+    "comlink": "^4.2.0",
+    "comlink-electron-adapter": "0.0.1",
     "ip": "^1.1.5",
     "office-ui-fabric-react": "^7.99.0",
     "react": "^16.12.0",
@@ -63,7 +65,7 @@
     "copy-pkg-json-webpack-plugin": "0.0.38",
     "cross-env": "^5.2.1",
     "css-loader": "^1.0.1",
-    "electron": "^3.1.13",
+    "electron": "^8.2.0",
     "electron-builder": "^20.44.4",
     "eslint": "^5.16.0",
     "eslint-config-airbnb": "^17.1.1",
@@ -79,8 +81,8 @@
     "source-map-loader": "^0.2.4",
     "spectron": "^5.0.0",
     "style-loader": "^0.23.1",
-    "ts-loader": "^5.4.5",
-    "ts-node": "^7.0.1",
+    "ts-loader": "^6.2.2",
+    "ts-node": "^8.8.1",
     "tsconfig-paths": "^3.9.0",
     "tslint": "^5.20.1",
     "tslint-microsoft-contrib": "^5.2.1",

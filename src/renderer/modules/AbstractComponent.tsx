@@ -10,7 +10,8 @@ export interface ITabsManaged {
   setSelectedTab: (value: number) => void;
 }
 
-export interface IAbstractComponent {
+export interface IAbstractComponentProp {
+  component: string,
   id: number;
   order: number;
   iconName: string;
@@ -21,9 +22,9 @@ export interface IAbstractComponent {
 }
 
 
-export class AbstractComponent extends React.PureComponent<IAbstractComponent,{}>{
+export class AbstractComponent extends React.PureComponent<IAbstractComponentProp,{}>{
 
-  constructor(props: IAbstractComponent){
+  constructor(props: IAbstractComponentProp){
     super(props);
   }
 

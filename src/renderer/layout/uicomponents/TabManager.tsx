@@ -16,10 +16,18 @@ import {
 import * as React from "react";
 import { openWindow } from "../StandardWindowController";
 import { TabContainer } from "./TabContainer";
+import * as Electron from "electron";
 import {
-  IAbstractComponent,
+  IAbstractComponentProp,
   ContextTabs
 } from "../../modules/AbstractComponent";
+import { VideograficoComponent } from "@/renderer/modules/videografico/VideograficoComponente";
+import ComponentsLibrary from "../utils/ComponentsLibrary";
+import {
+  getAvailableComponents,
+  assingComponentWindow
+} from "./TabManagerActions";
+import { IComponentDefinition } from "@/main/core/window/IWindowState";
 
 export interface IOverflowData {
   primary: IContextualMenuItem[];
@@ -78,33 +86,54 @@ const iconButtonStyles = mergeStyleSets({
   }
 });
 
-interface TabManagerProps {
-  children?: never;
-  listComponents: React.ReactElement<IAbstractComponent>[];
-}
-
-export const TabManager: React.FunctionComponent<TabManagerProps> = props => {
+export const TabManager: React.FunctionComponent = props => {
   const [showMenu, setShowMenu] = React.useState(false);
-  const [components, setComponents] = React.useState<
-    React.ReactElement<IAbstractComponent>[]
-  >(props.listComponents);
-  const [componentsMenu, setComponentsMenu] = React.useState(
-    props.listComponents.map(x => JSON.parse(JSON.stringify(x.props)))
-  );
+  const [components, setComponents] = React.useState<React.ReactElement[]>([]);
+  const [componentsMenu, setComponentsMenu] = React.useState<any>([]);
 
   const [selectedTab, setSelectedTab] = React.useState(-1);
 
-  React.useEffect(() => {}, []);
+  React.useEffect(() => {
+    getAvailableComponents(Electron.remote.getCurrentWindow().id).then(
+      components => {
+        let newComponents = components.map(ComponentsLibrary);
+        //setComponents(newComponents);
+        setComponentsMenu(
+          newComponents.map((x: any) => JSON.parse(JSON.stringify(x.props)))
+        );
+      }
+    );
+  }, []);
 
   const updateComponentsMenu = (
     update: boolean,
-    list: IAbstractComponent[]
+    list: IComponentDefinition[]
   ) => {
     if (update) {
       console.log(list);
-      setComponentsMenu([...list]);
+      assingComponentWindow(list.filter(x => x.state.showing)).then(
+        listComponents => {
+          setComponents(listComponents.map(ComponentsLibrary));
+          setComponentsMenu(list);
+        }
+      );
+      //setComponentsMenu([...list]);
     }
     setShowMenu(false);
+  };
+
+  const loadMenu = () => {
+    getAvailableComponents(Electron.remote.getCurrentWindow().id).then(
+      components => {
+        componentsMenu.forEach((element: any) => {
+          if (components.map(x => x.component).indexOf(element.component) != -1)
+            element.available = true;
+          else element.available = false;
+        });
+        setComponentsMenu(componentsMenu);
+        setShowMenu(true);
+      }
+    );
   };
 
   return (
@@ -122,7 +151,7 @@ export const TabManager: React.FunctionComponent<TabManagerProps> = props => {
             />
             <IconButton
               className="pivot-menu-button"
-              onClick={() => setShowMenu(true)}
+              onClick={() => loadMenu()}
               iconProps={{
                 className: "pivot-menu-button-image",
                 iconName: "Tiles"
@@ -146,9 +175,9 @@ export const TabManager: React.FunctionComponent<TabManagerProps> = props => {
 };
 
 const DialogSelectorMenu: React.FunctionComponent<{
-  content: IAbstractComponent[];
+  content: IComponentDefinition[];
   show: boolean;
-  callback: (update: boolean, action: IAbstractComponent[]) => void;
+  callback: (update: boolean, action: IComponentDefinition[]) => void;
 }> = ({ content, show, callback }): JSX.Element => {
   const [options, setOptions] = React.useState(content);
 
@@ -158,7 +187,7 @@ const DialogSelectorMenu: React.FunctionComponent<{
 
   const toggle = (n: number) => {
     let option = options.find(x => x.id === n);
-    if (option) option.showing = !option.showing;
+    if (option) option.state.showing = !option.state.showing;
     setOptions([...options]);
   };
 
@@ -174,21 +203,20 @@ const DialogSelectorMenu: React.FunctionComponent<{
         />
       </div>
       <div style={{ padding: "0 20px 20px" }}>
-        {options
-          .filter(x => x.available)
-          .map(x => (
-            <CompoundButton
-              key={"cb" + x.id}
-              onClick={() => toggle(x.id)}
-              primary
-              checked={x.showing}
-              style={{ margin: "5px" }}
-              iconProps={{ iconName: x.iconName }}
-              secondaryText={x.subTitle}
-            >
-              {x.title}
-            </CompoundButton>
-          ))}
+        {options.map(x => (
+          <CompoundButton
+            key={"cb" + x.id}
+            onClick={() => toggle(x.id)}
+            primary
+            disabled={!x.state.available}
+            checked={x.state.showing}
+            style={{ margin: "5px" }}
+            iconProps={{ iconName: x.iconName }}
+            secondaryText={x.subtitle}
+          >
+            {x.title}
+          </CompoundButton>
+        ))}
         <DefaultButton onClick={() => callback(true, options)}>
           Actualizar
         </DefaultButton>

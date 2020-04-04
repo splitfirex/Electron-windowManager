@@ -9,6 +9,10 @@ import * as RCMCommunicationsManager from "../main/core/comm/RCM/RCMCommunicatio
 import { OpenWindow } from "@main/core/window/WindowManager";
 import { BasicMessage, MM } from "@main/core/comm/MessageManager";
 import { init } from "./core/AppState";
+import { ipcMain } from 'electron';
+import { expose } from 'comlink';
+import { mainProcObjectEndpoint } from 'comlink-electron-adapter';
+
 
 let mainWindow: Electron.BrowserWindow | null;
 
@@ -21,7 +25,7 @@ function createWindow(): void {
   console.log("PRUEBA");
   OpenWindow();
   init();
-
+ 
   
   
   // Create the browser window.

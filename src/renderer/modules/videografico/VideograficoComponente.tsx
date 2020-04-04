@@ -1,9 +1,12 @@
 import * as React from "react";
-import { IAbstractComponent, ContextTabs } from "../AbstractComponent";
+import { IAbstractComponentProp, ContextTabs } from "../AbstractComponent";
 import * as Electron from "electron";
 import { BasicMessage } from "@/main/core/comm/MessageManager";
 import { usePrevious } from "@/renderer/layout/utils/UsePrevious";
 import { mainEvent } from "./VideograficoAction";
+import { wrap } from "comlink";
+import { ipcRenderer } from "electron";
+import { mainProcObjectEndpoint } from "comlink-electron-adapter";
 // @ts-ignore
 import SVG from "react-inlinesvg";
 import {
@@ -11,12 +14,9 @@ import {
   ContextualMenuItemType,
   ContextualMenu
 } from "office-ui-fabric-react";
+import { IComponentDefinition } from "@/main/core/window/IWindowState";
 
-export const VideograficoComponent: React.FunctionComponent<
-  IAbstractComponent
-> & {
-  defaultProps: Partial<IAbstractComponent>;
-} = props => {
+export const VideograficoComponent: React.FunctionComponent<IComponentDefinition> = props => {
   const linkRef = React.useRef<HTMLElement>(null);
 
   const svgCode = `
@@ -51,7 +51,6 @@ export const VideograficoComponent: React.FunctionComponent<
 
   React.useEffect(() => {
     console.log("INIT");
-
     let newValor = Electron.ipcRenderer.sendSync("/videografico/init", {});
     setValor(newValor);
   }, []);
@@ -106,7 +105,9 @@ export const VideograficoComponent: React.FunctionComponent<
       }}
     >
       <div className="videograficoSVG">{loadedSVG}</div>
-      {valor.slice(valor.length-50,valor.length).map(x=><div>{x}</div>)}
+      {valor.slice(valor.length - 50, valor.length).map(x => (
+        <div>{x}</div>
+      ))}
 
       <ContextualMenu
         target={currentMouseEvent}
@@ -117,14 +118,4 @@ export const VideograficoComponent: React.FunctionComponent<
       />
     </div>
   );
-};
-
-VideograficoComponent.defaultProps = {
-  id: 0,
-  order: 0,
-  iconName: "Nav2DMapView",
-  title: "Videografico",
-  subTitle: "Visualizador del entorno virtual",
-  showing: false,
-  available: true
 };

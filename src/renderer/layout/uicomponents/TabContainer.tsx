@@ -9,17 +9,18 @@ import {
 } from "office-ui-fabric-react";
 import ReactDOM from "react-dom";
 import {
-  IAbstractComponent,
+  IAbstractComponentProp,
   ContextTabs
 } from "@/renderer/modules/AbstractComponent";
+import { IComponentDefinition } from "@/main/core/window/IWindowState";
 
 export const TabContainer: React.FunctionComponent<{
-  content: IAbstractComponent[];
-  callback: (update: boolean, action: IAbstractComponent[]) => void;
+  content: IComponentDefinition[];
+  callback: (update: boolean, action: IComponentDefinition[]) => void;
 }> = ({ content, callback }) => {
   //const currentElement = React.useRef<ReactSortable<IAbstractComponent>>();
   const { selectedTab, setSelectedTab } = React.useContext(ContextTabs);
-  const [tabs, setTabs] = React.useState<IAbstractComponent[]>(content);
+  const [tabs, setTabs] = React.useState<IComponentDefinition[]>(content);
 
   React.useEffect(() => {
     setTabs(content);
@@ -28,7 +29,7 @@ export const TabContainer: React.FunctionComponent<{
   const removeElement = (id: number) => {
     setSelectedTab(-1);
     let newState = tabs.find(x => x.id === id);
-    if (newState) newState.showing = false;
+    if (newState) newState.state.showing = false;
     callback(true, tabs);
   };
 
@@ -44,7 +45,7 @@ export const TabContainer: React.FunctionComponent<{
       }}
     >
       {tabs
-        .filter(x => x.showing)
+        .filter(x => x.state.showing)
         .map(item => (
           <DefaultButton
             style={{

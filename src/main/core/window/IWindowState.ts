@@ -16,3 +16,12 @@ export interface IWindow {
   subscription: Subscription;
   tabs?: { [uuid: string]: ITab };
 }
+
+export interface IComponentDefinition {
+  id: number;
+  component: string;
+  title: string;
+  subtitle: string;
+  iconName: string;
+  state: { currentWindow?: number; available: boolean; showing: boolean };
+}

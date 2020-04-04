@@ -9,13 +9,7 @@ import { EstacionComponent } from "../estacion/EstacionComponente";
 export const MainScreenComponent: React.FunctionComponent = (): JSX.Element => {
   return (
     <MainLayout>
-      <TabManager
-        listComponents={[
-          <VideograficoComponent />,
-          <ComunicacionesComponent />,
-          <EstacionComponent />
-        ]}
-      ></TabManager>
+      <TabManager></TabManager>
     </MainLayout>
   );
 };
