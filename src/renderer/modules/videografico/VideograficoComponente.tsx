@@ -3,7 +3,7 @@ import { IAbstractComponentProp, ContextTabs } from "../AbstractComponent";
 import * as Electron from "electron";
 import { BasicMessage } from "@/main/core/comm/MessageManager";
 import { usePrevious } from "@/renderer/layout/utils/UsePrevious";
-import { mainEvent } from "./VideograficoAction";
+import { getSVGString } from "./VideograficoAction";
 import { wrap } from "comlink";
 import { ipcRenderer } from "electron";
 import { mainProcObjectEndpoint } from "comlink-electron-adapter";
@@ -12,26 +12,21 @@ import SVG from "react-inlinesvg";
 import {
   IContextualMenuItem,
   ContextualMenuItemType,
-  ContextualMenu
+  ContextualMenu,
 } from "office-ui-fabric-react";
 import { IComponentDefinition } from "@/main/core/window/IWindowState";
 
-export const VideograficoComponent: React.FunctionComponent<IComponentDefinition> = props => {
+export const VideograficoComponent: React.FunctionComponent<IComponentDefinition> = (
+  props
+) => {
   const linkRef = React.useRef<HTMLElement>(null);
-
-  const svgCode = `
+  const [svgCode, setSvgCode] = React.useState(`
   <svg xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink">
     <rect id="pepe" x="10" y="10" height="100" width="100"
       style="stroke:#ff0000; fill: #0000ff"/>
   </svg>
-  `;
-  const loadedSVG = (
-    <SVG
-      innerRef={linkRef}
-      src={"data:image/svg+xml;base64," + btoa(svgCode)}
-    />
-  );
+  `);
   const { selectedTab } = React.useContext(ContextTabs);
   const [valor, setValor] = React.useState<number[]>([0]);
   const [currentMouseEvent, setCurrentMouseEvent] = React.useState<
@@ -51,8 +46,10 @@ export const VideograficoComponent: React.FunctionComponent<IComponentDefinition
 
   React.useEffect(() => {
     console.log("INIT");
-    let newValor = Electron.ipcRenderer.sendSync("/videografico/init", {});
-    setValor(newValor);
+    getSVGString(false, "EST01A.svg").then((stringsvg) => {
+      console.log(stringsvg);
+      setSvgCode(stringsvg);
+    });
   }, []);
 
   React.useEffect(() => {
@@ -92,8 +89,8 @@ export const VideograficoComponent: React.FunctionComponent<IComponentDefinition
         linkRef.current?.childNodes.forEach((x: SVGRectElement) => {
           x.setAttribute("style", "fill:#ff0000");
         });
-      }
-    }
+      },
+    },
   ];
 
   return (
@@ -101,11 +98,16 @@ export const VideograficoComponent: React.FunctionComponent<IComponentDefinition
       key={props.id}
       style={{
         display: selectedTab === props.id ? "Block" : "none",
-        height: "100%"
+        height: "100%",
       }}
     >
-      <div className="videograficoSVG">{loadedSVG}</div>
-      {valor.slice(valor.length - 50, valor.length).map(x => (
+      <div className="videograficoSVG">
+        <SVG
+          innerRef={linkRef}
+          src={"data:image/svg+xml;base64," + btoa(svgCode)}
+        />
+      </div>
+      {valor.slice(valor.length - 50, valor.length).map((x) => (
         <div>{x}</div>
       ))}
 

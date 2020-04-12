@@ -84,9 +84,6 @@ export class WindowManager implements IWindowManager {
   };
 }
 
-const manager = new WindowManager();
-expose(manager, mainProcObjectEndpoint(Electron.ipcMain));
-
 MM.sender.subscribe(message => {
   switch (message.event) {
     case MessageType.NEW_WINDOW:
