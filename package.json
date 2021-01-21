@@ -49,7 +49,7 @@
     "react-svgmt": "^1.1.11",
     "rxjs": "^6.0.0",
     "soap": "https://github.com/splitfirex/node-soap",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-json-parser": "^2.1.0",
     "sockjs-client": "^1.4.0",
     "text-encoding": "^0.7.0"
